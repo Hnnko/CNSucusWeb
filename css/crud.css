@@ -1,0 +1,266 @@
+:root {
+    --accent: var(--mainBackground-clr);
+}
+
+.content-container {
+    padding: 20px;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.container {
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: white;
+    border-radius: 10px;
+    margin: 10px;
+    color: #333;
+}
+
+.container header .filterEntries {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.filterEntries .entries select, .filterEntries .filter input {
+    padding: 7px 10px;
+    border: 1px solid #ddd;
+    color: #333;
+    background: white;
+    border-radius: 5px;
+    outline: none;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.filterEntries .filter {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.filter input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 5px rgba(0, 128, 0, 0.2);
+}
+
+.container header .addMemberBtn {
+    margin-bottom: 15px;
+}
+
+header .addMemberBtn button, .popup header .closeBtn, .popup footer .submitBtn {
+    padding: 9px 14px;
+    color: white;
+    background: var(--accent);
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.addMemberBtn button:hover, .popup footer .submitBtn:hover {
+    background: darkgreen;
+}
+
+.container table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+table .heading {
+    background: var(--accent);
+    color: white;
+}
+
+table tr th, table tr td {
+    padding: 10px 15px;
+    vertical-align: middle;
+}
+
+table tr td {
+    border-bottom: 1px solid #ddd;
+}
+
+table tbody tr:hover {
+    background: #f5f5f5;
+}
+
+table tr td button {
+    margin: 0 3px;
+    padding: 5px;
+    width: 35px;
+    background: var(--accent);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 3px;
+    transition: 0.3s;
+}
+
+table tr td button:hover {
+    background: darkgreen;
+}
+
+.container footer {
+    margin-top: 25px;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+footer .pagination {
+    display: flex;
+}
+
+footer .pagination button {
+    width: 40px;
+    padding: 5px 0;
+    color: #333;
+    background: white;
+    font-size: 16px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    margin: 0;
+    transition: 0.3s;
+}
+
+.pagination button:first-child {
+    width: 85px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.pagination button:last-child {
+    width: 85px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.pagination button.active, .pagination button:hover {
+    background: var(--accent);
+    color: white;
+}
+
+/* Popup Form */
+.dark_bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1000;
+    transition: 0.4s;
+}
+
+.popup {
+    border-radius: 5px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    background: white;
+    transition: 0.4s;
+    transform: scale(0.7);
+    opacity: 0;
+    visibility: hidden;
+    width: 90%;
+    max-width: 500px;
+}
+
+.popup header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding: 15px 20px;
+    background: var(--accent);
+    color: white;
+    border-radius: 5px 5px 0 0;
+}
+
+.popup header .closeBtn {
+    font-size: 24px;
+    font-weight: 300;
+    padding: 0 10px;
+    background: transparent;
+    color: white;
+}
+
+.popup header .closeBtn:hover {
+    color: #ddd;
+}
+
+.popup form {
+    padding: 20px;
+}
+
+.popup footer {
+    border-top: 1px solid #ddd;
+    padding: 15px 20px;
+    text-align: right;
+}
+
+.inputFieldContainer .form_control {
+    margin: 15px 0;
+}
+
+.inputFieldContainer .form_control label {
+    display: block;
+    color: #333;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form_control input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    color: #333;
+    background: white;
+    border-radius: 5px;
+    outline: none;
+    transition: 0.3s;
+    width: 100%;
+}
+
+.form_control input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 5px rgba(0, 128, 0, 0.2);
+}
+
+.active {
+    transform: scale(1);
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .filterEntries {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .container footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+}

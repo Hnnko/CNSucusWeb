@@ -6,6 +6,8 @@
     <title>Pagina Clientes CN Sucus</title>
     <link href="/src/output.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/crud.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script type="text/javascript" src="/js/sidebar.js" defer></script>
 </head>
 <body>
@@ -29,22 +31,6 @@
                 <span>Dashboard</span>
                 </a>
             </li>
-            <!--
-            <li>
-                <button onclick=toggleSubMenu(this) class="dropdown-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h207q16 0 30.5 6t25.5 17l57 57h320q33 0 56.5 23.5T880-640v400q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H447l-80-80H160v480Zm0 0v-480 480Zm400-160v40q0 17 11.5 28.5T600-320q17 0 28.5-11.5T640-360v-40h40q17 0 28.5-11.5T720-440q0-17-11.5-28.5T680-480h-40v-40q0-17-11.5-28.5T600-560q-17 0-28.5 11.5T560-520v40h-40q-17 0-28.5 11.5T480-440q0 17 11.5 28.5T520-400h40Z"/></svg>
-                <span>Ventas</span>
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M480-361q-8 0-15-2.5t-13-8.5L268-556q-11-11-11-28t11-28q11-11 28-11t28 11l156 156 156-156q11-11 28-11t28 11q11 11 11 28t-11 28L508-372q-6 6-13 8.5t-15 2.5Z"/></svg>
-                </button>
-                <ul class="sub-menu">
-                <div>
-                    <li><a href="#">Ingresar Ventas</a></li>
-                    <li><a href="#">Historial de Ventas</a></li>
-                  
-                </div>
-                </ul>
-            </li>
-            -->
             <li>
                 <a href="/sell">
                 <img src="/src/sidebar-icons/sells-icon.png" width="32px" height="32px" style="filter: invert(1);"/>
@@ -65,5 +51,89 @@
             </li>
         </ul>
     </nav>
+    
+    <main class="content-container">
+        <div class="container">
+            <header>
+                <div class="filterEntries">
+                    <div class="entries">
+                        <span>Mostrar</span>
+                        <select name="" id="table_size">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                        </select>
+                        <span>entradas</span>
+                    </div>
+                    <div class="filter">
+                        <label for="search">Buscar:</label>
+                        <input type="search" name="" id="search">
+                    </div>
+                </div>
+                <div class="addMemberBtn">
+                    <button>Agregar Cliente</button>
+                </div>
+            </header>
+
+            <table>
+                <thead>
+                    <tr class="heading">
+                        <th>#</th>
+                        <th>RUT</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="userInfo">
+                    <!-- Datos de clientes se cargarán aquí -->
+                </tbody>
+            </table>
+
+            <footer>
+                <span class="showEntries">Mostrando 1 a 10 de 100 entradas</span>
+                <div class="pagination">
+                    <!-- Botones de paginación se generarán aquí -->
+                </div>
+            </footer>
+        </div>
+
+        <!-- Formulario emergente para agregar/editar clientes -->
+        <div class="dark_bg">
+            <div class="popup">
+                <header>
+                    <h2 class="modalTitle">Formulario de Cliente</h2>
+                    <button class="closeBtn">&times;</button>
+                </header>
+                <form>
+                    <div class="inputFieldContainer">
+                        <div class="form_control">
+                            <label for="clientRut">RUT</label>
+                            <input type="text" id="clientRut" required>
+                        </div>
+                        <div class="form_control">
+                            <label for="clientName">Nombre</label>
+                            <input type="text" id="clientName" required>
+                        </div>
+                        <div class="form_control">
+                            <label for="clientEmail">Email</label>
+                            <input type="email" id="clientEmail" required>
+                        </div>
+                        <div class="form_control">
+                            <label for="clientPhone">Teléfono</label>
+                            <input type="tel" id="clientPhone" required>
+                        </div>
+                    </div>
+                    <footer class="popupFooter">
+                        <button type="submit" class="submitBtn">Guardar</button>
+                    </footer>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/client-crud.js"></script>
 </body>
 </html>
