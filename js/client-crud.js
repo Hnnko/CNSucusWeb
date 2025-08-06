@@ -17,9 +17,9 @@ const userInfo = document.querySelector('.userInfo');
 const table = document.querySelector('table');
 const filterData = document.getElementById('search');
 
-// Obtener datos del localStorage o inicializar un array vacío
-let originalData = localStorage.getItem('clientData') ? JSON.parse(localStorage.getItem('clientData')) : [];
-let getData = [...originalData];
+// Inicializar arrays para datos de la API
+let originalData = [];
+let getData = [];
 
 // Variables para paginación
 let isEdit = false, editId;
@@ -30,8 +30,26 @@ let endIndex = 0;
 let currentIndex = 1;
 let maxIndex = 0;
 
-// Mostrar información inicial
-showInfo();
+// Función para cargar clientes desde la API
+async function loadClientsFromAPI() {
+    try {
+        const response = await fetch('/api/clients');
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+        const clients = await response.json();
+        originalData = clients;
+        getData = [...clients];
+        showInfo();
+        displayIndexBtn();
+    } catch (error) {
+        console.error('Error al cargar clientes:', error);
+        userInfo.innerHTML = `<tr class="clientDetails"><td class="empty" colspan="7" align="center">Error al cargar datos: ${error.message}</td></tr>`;
+    }
+}
+
+// Cargar datos iniciales desde la API
+loadClientsFromAPI();
 
 // Event Listeners
 newClientBtn.addEventListener('click', () => {
@@ -118,13 +136,13 @@ function showInfo() {
                 let createElement = `<tr class="clientDetails">
                 <td>${i + 1}</td>
                 <td>${client.rut}</td>
-                <td>${client.name}</td>
+                <td>${client.cliente}</td>
                 <td>${client.email}</td>
-                <td>${client.phone}</td>
+                <td>${client.telefono}</td>
                 <td>
-                    <button onclick="readInfo('${client.rut}', '${client.name}', '${client.email}', '${client.phone}')"><i class="fa-regular fa-eye"></i></button>
-                    <button onclick="editInfo(${i}, '${client.rut}', '${client.name}', '${client.email}', '${client.phone}')"><i class="fa-regular fa-pen-to-square"></i></button>
-                    <button onclick="deleteInfo(${i})"><i class="fa-regular fa-trash-can"></i></button>
+                    <button onclick="readInfo('${client.rut}', '${client.cliente}', '${client.email}', '${client.telefono}')"><i class="fa-regular fa-eye"></i></button>
+                    <button onclick="editInfo(${i}, '${client.rut}', '${client.cliente}', '${client.email}', '${client.telefono}')"><i class="fa-regular fa-pen-to-square"></i></button>
+                    <button onclick="deleteInfo('${client.rut}')"><i class="fa-regular fa-trash-can"></i></button>
                 </td>
             </tr>`;
 
@@ -137,11 +155,11 @@ function showInfo() {
 }
 
 // Función para ver detalles de un cliente
-function readInfo(rut, name, email, phone) {
+function readInfo(rut, cliente, email, telefono) {
     clientRut.value = rut;
-    clientName.value = name;
+    clientName.value = cliente;
     clientEmail.value = email;
-    clientPhone.value = phone;
+    clientPhone.value = telefono;
 
     darkBg.classList.add('active');
     popupForm.classList.add('active');
@@ -154,14 +172,14 @@ function readInfo(rut, name, email, phone) {
 }
 
 // Función para editar un cliente
-function editInfo(id, rut, name, email, phone) {
+function editInfo(id, rut, cliente, email, telefono) {
     isEdit = true;
-    editId = id;
+    editId = rut; // Usar rut como identificador
 
     clientRut.value = rut;
-    clientName.value = name;
+    clientName.value = cliente;
     clientEmail.value = email;
-    clientPhone.value = phone;
+    clientPhone.value = telefono;
 
     darkBg.classList.add('active');
     popupForm.classList.add('active');
@@ -175,87 +193,78 @@ function editInfo(id, rut, name, email, phone) {
 }
 
 // Función para eliminar un cliente
-function deleteInfo(index) {
+async function deleteInfo(rut) {
     if (confirm("¿Estás seguro de que quieres eliminar este cliente?")) {
-        originalData.splice(index, 1);
-        localStorage.setItem("clientData", JSON.stringify(originalData));
-        
-        // Actualizar getData después de eliminar el registro
-        getData = [...originalData];
+        try {
+            const response = await fetch(`/api/clients/${rut}`, {
+                method: 'DELETE'
+            });
 
-        preLoadCalculations();
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
 
-        if (getData.length === 0) {
-            currentIndex = 1;
-            startIndex = 1;
-            endIndex = 0;
-        } else if (currentIndex > maxIndex) {
-            currentIndex = maxIndex;
-        }
+            // Recargar datos desde la API
+            await loadClientsFromAPI();
 
-        showInfo();
-        highlightIndexBtn();
-        displayIndexBtn();
-
-        var nextBtn = document.querySelector('.next');
-        var prevBtn = document.querySelector('.prev');
-
-        if (Math.floor(maxIndex) > currentIndex) {
-            nextBtn.classList.add("act");
-        } else {
-            nextBtn.classList.remove("act");
-        }
-
-        if (currentIndex > 1) {
-            prevBtn.classList.add('act');
+        } catch (error) {
+            console.error('Error al eliminar cliente:', error);
+            alert('Error al eliminar el cliente: ' + error.message);
         }
     }
 }
 
 // Event listener para el formulario
-form.addEventListener('submit', (e) => {
+form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const information = {
-        id: Date.now(),
+    const clientData = {
         rut: clientRut.value,
-        name: clientName.value,
+        cliente: clientName.value,
         email: clientEmail.value,
-        phone: clientPhone.value
+        telefono: clientPhone.value
     };
 
-    if (!isEdit) {
-        originalData.unshift(information);
-    } else {
-        originalData[editId] = information;
-    }
-    
-    getData = [...originalData];
-    localStorage.setItem('clientData', JSON.stringify(originalData));
+    try {
+        let response;
+        if (!isEdit) {
+            // Crear nuevo cliente
+            response = await fetch('/api/clients', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(clientData)
+            });
+        } else {
+            // Actualizar cliente existente
+            response = await fetch(`/api/clients/${editId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(clientData)
+            });
+        }
 
-    submitBtn.innerHTML = "Guardar";
-    modalTitle.innerHTML = "Agregar Cliente";
-    submitBtn.style.display = "block";
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
 
-    darkBg.classList.remove('active');
-    popupForm.classList.remove('active');
-    form.reset();
+        // Recargar datos desde la API
+        await loadClientsFromAPI();
 
-    highlightIndexBtn();
-    displayIndexBtn();
-    showInfo();
+        // Resetear formulario y modal
+        submitBtn.innerHTML = "Guardar";
+        modalTitle.innerHTML = "Agregar Cliente";
+        darkBg.classList.remove('active');
+        popupForm.classList.remove('active');
+        form.reset();
+        isEdit = false;
 
-    var nextBtn = document.querySelector(".next");
-    var prevBtn = document.querySelector(".prev");
-    
-    if (Math.floor(maxIndex) > currentIndex) {
-        nextBtn.classList.add("act");
-    } else {
-        nextBtn.classList.remove("act");
-    }
-
-    if (currentIndex > 1) {
-        prevBtn.classList.add("act");
+    } catch (error) {
+        console.error('Error al guardar cliente:', error);
+        alert('Error al guardar el cliente: ' + error.message);
     }
 });
 

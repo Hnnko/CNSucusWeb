@@ -1,7 +1,17 @@
+// Cargar variables de entorno
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
 const express = require('express');
 const path = require('path');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
+
+app.use(express.json());
+
+// Importar configuración de base de datos
+const db = require('./config/database');
 
 // Configurar middleware para servir archivos estáticos
 app.use('/css', express.static(path.join(__dirname, 'css')));
@@ -28,6 +38,10 @@ app.get('/client', (req, res) => {
 app.get('/product', (req, res) => {
   res.sendFile(path.join(__dirname, 'pages', 'product.html'));
 });
+
+//Rutas API
+const clientsRouter = require('./routes/clients');
+app.use('/api/clients', clientsRouter);
 
 // Iniciar el servidor
 app.listen(port, () => {
