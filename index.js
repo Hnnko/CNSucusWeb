@@ -42,6 +42,8 @@ app.get('/product', (req, res) => {
 //Rutas API
 const clientsRouter = require('./routes/clients');
 app.use('/api/clients', clientsRouter);
+const productsRouter = require('./routes/products');
+app.use('/api/products', productsRouter);
 
 // Iniciar el servidor
 app.listen(port, () => {
