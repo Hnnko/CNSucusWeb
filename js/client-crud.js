@@ -339,13 +339,15 @@ filterData.addEventListener("input", () => {
     if (searchTerm !== "") {
         const filteredData = originalData.filter((item) => {
             const rut = item.rut.toLowerCase();
-            const fullName = (item.name).toLowerCase();
+            const fullName = item.cliente.toLowerCase();
             const email = item.email.toLowerCase();
+            const telefono = item.telefono.toString().toLowerCase();
 
             return (
                 rut.includes(searchTerm) ||
                 fullName.includes(searchTerm) ||
-                email.includes(searchTerm)
+                email.includes(searchTerm) ||
+                telefono.includes(searchTerm)
             );
         });
 
