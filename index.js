@@ -44,6 +44,10 @@ const clientsRouter = require('./routes/clients');
 app.use('/api/clients', clientsRouter);
 const productsRouter = require('./routes/products');
 app.use('/api/products', productsRouter);
+const sellsRouter = require('./routes/sells');
+app.use('/api/sells', sellsRouter);
+const sellItemsRouter = require('./routes/sellItems');
+app.use('/api/sellItems', sellItemsRouter); 
 
 // Iniciar el servidor
 app.listen(port, () => {
