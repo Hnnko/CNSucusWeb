@@ -59,6 +59,7 @@ newProductBtn.addEventListener('click', () => {
     submitBtn.innerHTML = "Guardar";
     modalTitle.innerHTML = "Agregar Producto";
     form.reset();
+    productCode.value = generateProductCode();
     darkBg.classList.add('active');
     popupForm.classList.add('active');
 });
@@ -78,6 +79,11 @@ function preLoadCalculations() {
     if ((arrayLength % tableSize) > 0) {
         maxIndex++;
     }
+}
+
+function generateProductCode() {
+    const randomCode = Math.floor(100000 + Math.random() * 900000); // Genera un código de 6 dígitos
+    return `PROD-${randomCode}`;
 }
 
 // Función para mostrar botones de paginación

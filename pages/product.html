@@ -11,7 +11,7 @@
     <script type="text/javascript" src="/js/sidebar.js" defer></script>
 </head>
 <body>
-    <nav id="sidebar">
+    <nav id="sidebar" >
         <ul>
             <li>
                 <span class="logo">CN Sucus</span>
@@ -111,7 +111,9 @@
                     <div class="inputFieldContainer">
                         <div class="form_control">
                             <label for="productCode">Código</label>
-                            <input type="text" id="productCode" required>
+                            <div style="display: flex; gap: 5px;">
+                                <input type="text" id="productCode" readonly style="background-color: #f0f0f0;">
+                            </div>
                         </div>
                         <div class="form_control">
                             <label for="productName">Nombre</label>
