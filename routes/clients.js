@@ -17,6 +17,13 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { rut, cliente, email, telefono } = req.body;
+    const checkClient = await db.query('SELECT * FROM clientes WHERE rut = $1', [rut]);
+    
+    if (checkClient.rows.length > 0) {
+      // Si ya existe, devolvemos error 400 (Bad Request) y salimos de la función
+      return res.status(400).json({ error: 'El cliente con este RUT ya existe' });
+    }
+    
     const result = await db.query(
       'INSERT INTO clientes (rut, cliente, email, telefono) VALUES ($1, $2, $3, $4) RETURNING *',
       [rut, cliente, email, telefono]
