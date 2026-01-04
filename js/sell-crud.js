@@ -37,6 +37,7 @@ const IVA_RATE = 0.19; // 19% IVA
 document.addEventListener('DOMContentLoaded', () => {
     loadSalesData();
     loadProducts();
+    loadClients();
 });
 
 // Función para cargar datos de ventas
@@ -149,8 +150,23 @@ function editInfo(id) {
 
     if (saleToEdit) {
         saleCode.value = saleToEdit.codigo_venta;
-        saleClientCode.value = saleToEdit.codigo_cliente;
-        saleClientName.value = saleToEdit.cliente;
+        
+        const clientSelect = document.getElementById('clientSelect');
+        // Buscar y seleccionar el cliente correcto en el dropdown
+        for (let i = 0; i < clientSelect.options.length; i++) {
+            if (clientSelect.options[i].value) {
+                try {
+                    const client = JSON.parse(clientSelect.options[i].value);
+                    if (client.rut === saleToEdit.codigo_cliente) {
+                        clientSelect.selectedIndex = i;
+                        break;
+                    }
+                } catch (e) {
+                    console.error('Error al parsear datos del cliente:', e);
+                }
+            }
+        }
+
         saleDate.value = saleToEdit.fecha_venta;
         salePaymentMethod.value = saleToEdit.metodo_pago;
         
@@ -267,6 +283,7 @@ addMemberBtn.addEventListener('click', () => {
     editId = null;
     form.reset();
     clearCart();
+    saleCode.value = generateSaleCode();
     modalTitle.textContent = 'Agregar Venta';
     submitBtn.textContent = 'Guardar';
     darkBg.classList.add('active');
@@ -294,11 +311,18 @@ form.addEventListener('submit', (e) => {
         alert('Debe agregar al menos un producto al carrito');
         return;
     }
+
+    const clientSelect = document.getElementById('clientSelect');
+    if (!clientSelect.value) {
+        alert('Debe seleccionar un cliente');
+        return;
+    }
+    const selectedClient = JSON.parse(clientSelect.value);
     
     const formData = {
         codigo_venta: saleCode.value,
-        codigo_cliente: saleClientCode.value,
-        cliente: saleClientName.value,
+        codigo_cliente: selectedClient.rut,
+        cliente: selectedClient.cliente,
         fecha_venta: saleDate.value,
         metodo_pago: salePaymentMethod.value,
         monto_neto: parseFloat(saleNetAmount.value),
@@ -429,13 +453,39 @@ function loadProducts() {
             data.forEach(product => {
                 const option = document.createElement('option');
                 option.value = JSON.stringify(product);
-                option.textContent = `${product.codigo} - ${product.nombre}`;
+                option.textContent = `[${product.codigo}] ${product.nombre}`;
                 productSelect.appendChild(option);
             });
         })
         .catch(error => {
             console.error('Error al cargar productos:', error);
         });
+}
+
+// Función para cargar clientes
+function loadClients() {
+    fetch('/api/clients')
+        .then(response => response.json())
+        .then(data => {
+            const clientSelect = document.getElementById('clientSelect');
+            clientSelect.innerHTML = '<option value="">Seleccionar cliente...</option>';
+            
+            data.forEach(client => {
+                const option = document.createElement('option');
+                option.value = JSON.stringify(client);
+                option.textContent = `[${client.rut}] ${client.cliente}`;
+                clientSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error al cargar clientes:', error);  
+        });
+}
+
+// Función para generar código de venta único
+function generateSaleCode() {
+    const randomCode = Math.floor(100000 + Math.random() * 900000); // Genera un código de 6 dígitos
+    return `VNT-${randomCode}`;
 }
 
 // Función para agregar producto al carrito
@@ -559,12 +609,12 @@ function clearCart() {
 
 // Función para calcular totales
 function calculateTotals() {
-    const netAmount = cart.reduce((total, item) => {
+    const totalAmount = cart.reduce((total, item) => {
         const precio = parseFloat(item.precio) || 0;
         return total + (precio * item.quantity);
     }, 0);
-    const ivaAmount = netAmount * IVA_RATE;
-    const totalAmount = netAmount + ivaAmount;
+    const ivaAmount = totalAmount * IVA_RATE;
+    const netAmount = totalAmount - ivaAmount;
     
     document.getElementById('saleNetAmount').value = netAmount.toFixed(2);
     document.getElementById('saleIvaAmount').value = ivaAmount.toFixed(2);

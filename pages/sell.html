@@ -116,15 +116,13 @@
                     <div class="inputFieldContainer">
                         <div class="form_control">
                             <label for="saleCode">Codigo Venta</label>
-                            <input type="text" id="saleCode" required>
+                            <input type="text" id="saleCode" readonly style="background-color: #f0f0f0;">
                         </div>
                         <div class="form_control">
-                            <label for="saleClientCode">Codigo Cliente</label>
-                            <input type="text" id="saleClientCode" required>
-                        </div>
-                        <div class="form_control">
-                            <label for="saleClientName">Cliente</label>
-                            <input type="text" id="saleClientName" required>
+                            <label for="clientSelect">Cliente</label>
+                            <select id="clientSelect" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                                <option value="">Seleccionar cliente...</option>
+                            </select>
                         </div>
                         <div class="form_control">
                             <label for="saleDate">Fecha Venta</label>
@@ -132,7 +130,12 @@
                         </div>
                         <div class="form_control">
                             <label for="salePaymentMethod">Metodo de Pago</label>
-                            <input type="text" id="salePaymentMethod" required>
+                            <select id="salePaymentMethod" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                                <option value="">Seleccionar metodo de pago...</option>
+                                <option value="efectivo">Efectivo</option>
+                                <option value="tarjeta">Tarjeta</option>
+                                <option value="transferencia">Transferencia</option>
+                            </select>
                         </div>
                         <!-- Carrito de Compras -->
                         <div class="form_control">

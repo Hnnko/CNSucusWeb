@@ -33,6 +33,9 @@ router.put('/:codigo', async (req, res) => {
   try {
     const { codigo } = req.params;
     const { codigo_cliente, cliente, fecha_venta, metodo_pago, monto_neto, iva, monto_total } = req.body;
+
+    
+
     const result = await db.query(
       'UPDATE ventas SET codigo_cliente = $1, cliente = $2, fecha_venta = $3, metodo_pago = $4, monto_neto = $5, iva = $6, monto_total = $7 WHERE codigo_venta = $8 RETURNING *',
       [codigo_cliente, cliente, fecha_venta, metodo_pago, monto_neto, iva, monto_total, codigo]
@@ -53,6 +56,9 @@ router.put('/:codigo', async (req, res) => {
 router.delete('/:codigo', async (req, res) => {
   try {
     const { codigo } = req.params;
+
+    await db.query('DELETE FROM item_venta WHERE codigo_venta = $1', [codigo]);
+
     const result = await db.query('DELETE FROM ventas WHERE codigo_venta = $1 RETURNING *', [codigo]);
 
     
